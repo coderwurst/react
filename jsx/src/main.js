@@ -8,7 +8,7 @@ function Header() {
   return <div className='header'><Title label='Hello, ' name = 'Jimmy McGill' /></div>;
 }
 function ErrorMessage() {
-  return <div> { isError() ? <h4>an error has occurred, please refresh the page and try again</h4> : null } </div>;
+  return <div> { isError() ? <h4 style={{color: 'red', fontSize: '20px'}}>an error has occurred, please refresh the page and try again</h4> : null } </div>;
 }
 
 function isError() {
