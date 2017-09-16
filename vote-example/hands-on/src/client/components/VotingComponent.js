@@ -1,5 +1,7 @@
 import React from 'react';
 
+import ChoiceBar from './ChoiceBar.js';
+
 export default class VotingComponent extends React.Component {
     render () {
         const { vote } = this.props;
@@ -12,6 +14,9 @@ export default class VotingComponent extends React.Component {
                     <div className="Description Emphasis">
                         {vote.description}
                     </div>
+                </div>
+                <div>{ vote.choices.map
+                    (c => <ChoiceBar key={c.id} {...c} />)}
                 </div>
             </div>
         );

@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import VotingComponent from './components/VotingComponent';
+import Layout from './components/Layout';
 
 const vote = {
   title:          'How is your day?',
@@ -15,6 +16,8 @@ const vote = {
 };
 
 ReactDOM.render(
-    <VotingComponent vote={vote} />, document.getElementById('voteAppMountPoint')
+    <Layout>
+      <VotingComponent vote={vote} />
+    </Layout>, document.getElementById('voteAppMountPoint')
 );
 
