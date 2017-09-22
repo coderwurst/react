@@ -1,9 +1,32 @@
 import React from 'react';
 
+
+function emptyChoice() {
+    return {
+        id:             'choice_${Date.now()}',
+        count:          0,
+        title:          null
+    };
+}
+
+function emptyVote() {
+    return {
+        id:             'vote_${Date.now()}',
+        title:          '',
+        description:    '',
+        formCompleted:  false,
+        choices:        [emptyChoice()]
+    };
+}
+
 export default class VoteComposer extends React.Component {
 
   constructor(props) {
     super(props);
+
+    this.state = {
+        vote: emptyVote()
+    };
 
     this.activateIfNeeded = this.activateIfNeeded.bind(this);
     this.save = this.save.bind(this);
