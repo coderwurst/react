@@ -12,6 +12,7 @@ export default class VoteController extends React.Component {
 
     this.setCurrentVote = this.setCurrentVote.bind(this);
     this.registerVote = this.registerVote.bind(this);
+    this.addVote = this.addVote.bind(this);
     this.activateVoteComposer = this.activateVoteComposer.bind(this);
     this.deactivateVoteComposer = this.deactivateVoteComposer.bind(this);
   }
@@ -29,12 +30,18 @@ export default class VoteController extends React.Component {
     return newVote;
   }
 
+  // from VotingComponent
   registerVote(vote, choice) {
     const { allVotes } = this.state;
     const newVotes = allVotes.map((v)=>v.id !== vote.id ? v : this.registerChoice(v, choice));
     this.setState({
       allVotes: newVotes
     });
+  }
+
+  addVote(vote) {
+    const { allVotes } = this.state;
+    this.setState({allVotes: [...allVotes, vote]});
   }
 
   activateVoteComposer() {
@@ -64,7 +71,7 @@ export default class VoteController extends React.Component {
         <VoteComposer active={composerActive}
                       onDeactivate={this.deactivateVoteComposer}
                       onActivate={this.activateVoteComposer}
-                      onSave={()=>{console.log('Save')}}/>
+                      onSave={this.addVote}/>
       </div>
     );
   }

@@ -1,46 +1,51 @@
 import React from 'react';
 
-
 function emptyChoice() {
-    return {
-        id:             'choice_${Date.now()}',
-        count:          0,
-        title:          null
-    };
+  return {
+    id:    `choice_${Date.now()}`,
+    count: 0,
+    title: null
+  };
 }
 
 function emptyVote() {
-    return {
-        id:             'vote_${Date.now()}',
-        title:          '',
-        description:    '',
-        formCompleted:  false,
-        choices:        [emptyChoice()]
-    };
+  return {
+    id:            `vote_${Date.now()}`,
+    title:         '',
+    description:   '',
+    formCompleted: false,
+    choices:       [emptyChoice()]
+  };
 }
 
 export default class VoteComposer extends React.Component {
-
   constructor(props) {
     super(props);
 
     this.state = {
-        vote: emptyVote()
+      vote: emptyVote()
     };
 
     this.activateIfNeeded = this.activateIfNeeded.bind(this);
     this.save = this.save.bind(this);
     this.close = this.close.bind(this);
+    this.onChange = this.onChange.bind(this);
   }
 
   close() {
     const { onDeactivate } = this.props;
+    this.setState({vote: emptyVote()});
     onDeactivate();
   }
 
   save() {
     const { onSave } = this.props;
-    onSave();
+    const { vote } = this.state;
+    const newVote = {
+      ...vote,
+      choices: vote.choices.slice(0, -1)
+    };
+    onSave(newVote);
     this.close();
   }
 
@@ -49,6 +54,57 @@ export default class VoteComposer extends React.Component {
     if (!active) {
       onActivate();
     }
+  }
+
+  onChange(event) {
+    const { name: fieldName, value: fieldValue } = event.target;
+    const { vote } = this.state;
+
+    const newVote = {
+      ...vote,
+      [fieldName]: fieldValue
+    };
+
+    this.setState({
+      vote: newVote
+    });
+  }
+
+  onChoiceChange(choiceIx, title) {
+    const { vote } = this.state;
+    const choices = vote.choices;
+    const choice = choices[choiceIx];
+
+    const newChoice = {
+      ...choice,
+      title
+    };
+
+    const newChoices = choices.map((c) => (c.id === choice.id ? newChoice : c));
+
+    if (!choice.title && newChoice.title && choiceIx === (choices.length - 1)) {
+      newChoices.push(emptyChoice());
+    }
+
+    this.setState({
+      vote: {
+        ...vote,
+        choices: newChoices
+      }
+    });
+  }
+
+  isFormCompleted() {
+    const {active} = this.props;
+    const { vote: { title, description, choices} } = this.state;
+    const choicesCount = choices.length;
+    let formCompleted = active && title && description && choicesCount > 1;
+
+    if (formCompleted) {
+      formCompleted = choices.every((c, ix) => ix === choicesCount - 1 || c.title);
+  }
+
+    return formCompleted;
   }
 
   renderInactiveForm() {
@@ -64,6 +120,9 @@ export default class VoteComposer extends React.Component {
   }
 
   renderActiveForm() {
+    const { vote: { title, description, choices } } = this.state;
+    const formCompleted = this.isFormCompleted();
+
     return (
       <div className="Row VoteComposer Spacer">
         <div className="Head">
@@ -72,23 +131,35 @@ export default class VoteComposer extends React.Component {
                    autoFocus
                    name="title"
                    type="text"
-                   placeholder="What do you want to know ?"/>
+                   placeholder="What do you want to know ?"
+                   value={title}
+                   onChange={this.onChange}/>
           </h1>
           <input className="Description"
                  name="description"
                  type="text"
-                 placeholder="Describe your question in one sentence here"/>
+                 placeholder="Describe your question in one sentence here"
+                 value={description}
+                 onChange={this.onChange}/>
         </div>
 
         <div className="Body">
-          <input className="Choice"
-                 type="text"
-                 key="Choice_1"
-                 name="Choice_1"
-                 placeholder="Choice #1"
-          />
+          {choices.map((c, ix) => {
+            const keyAndName = `choices_${ix}`;
+            return (
+              <input className="Choice"
+                     type="text"
+                     key={keyAndName}
+                     name={keyAndName}
+                     placeholder={`Choice #${(ix + 1)}`}
+                     onChange={(event)=>{this.onChoiceChange(ix, event.target.value)}}
+              />
+            );
+          })}
+
           <div className="ButtonBar">
-            <a className="Button" onClick={this.save}>Save</a>
+            <a className={formCompleted ? 'Button' : 'Button disabled'}
+               onClick={formCompleted ? this.save : null}>Save</a>
             <a className="Button" onClick={this.close}>Cancel</a>
           </div>
         </div>
