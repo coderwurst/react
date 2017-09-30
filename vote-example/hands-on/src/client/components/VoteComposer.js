@@ -10,7 +10,6 @@ function emptyChoice() {
 
 function emptyVote() {
   return {
-    id:            `vote_${Date.now()}`,
     title:         '',
     description:   '',
     formCompleted: false,
