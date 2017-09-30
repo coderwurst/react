@@ -31,20 +31,15 @@ export default class VoteController extends React.Component {
     this.setState({currentVoteId: vote && !composerActive ? vote.id : null});
   }
 
-  registerChoice(vote, choice) {
-    const newVote = {
-      ...vote,
-      choices: vote.choices.map((c) => c.id !== choice.id ? c : {...c, count: c.count + 1})
-    };
-    return newVote;
-  }
-
-  // from VotingComponent
   registerVote(vote, choice) {
-    const { allVotes } = this.state;
-    const newVotes = allVotes.map((v)=>v.id !== vote.id ? v : this.registerChoice(v, choice));
-    this.setState({
-      allVotes: newVotes
+    sendJson('put',
+    'api/votes/${vote.id}/choices/${choice.id}/vote',{}
+    ).then(updatedVote => {
+      const newAllVotes =
+        this.state.allVotes.map
+          (vote => vote.id === updatedVote.id ? updatedVote : vote);
+        this.setState({allVotes: newAllVotes});
+        this.setCurrentVote(updatedVote);
     });
   }
 
