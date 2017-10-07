@@ -10,8 +10,6 @@ export default function Layout ({children}) {
                 </div>
             </div>
             
-            <Link to='/about'>about us</Link>
-
             <div className="Main">
                 <div className="Container">
                     {children}
