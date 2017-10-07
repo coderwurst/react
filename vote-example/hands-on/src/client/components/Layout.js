@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router';
 
 export default function Layout ({children}) {
     return (
@@ -8,6 +9,8 @@ export default function Layout ({children}) {
                     Vote as a Service
                 </div>
             </div>
+            
+            <Link to='/about'>about us</Link>
 
             <div className="Main">
                 <div className="Container">
