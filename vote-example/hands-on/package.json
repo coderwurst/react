@@ -7,7 +7,8 @@
     "url": "https://github.com/nilshartmann/react-vote-example.git"
   },
   "scripts": {
-    "start": "node devserver.js"
+    "start": "npm run webpack && node ./src/server/index.js",
+    "webpack": "webpack"
   },
   "author": "Nils Hartmann, Olli Zeigermann",
   "license": "MIT",
@@ -22,8 +23,11 @@
     "webpack-dev-server": "^1.14.1"
   },
   "dependencies": {
-    "babel-polyfill": "^6.26.0",
+    "babel-polyfill": "^6.3.14",
+    "babel-register": "^6.4.3",
+    "hapi": "12.1.0",
     "history": "^1.17.0",
+    "inert": "3.2.0",
     "isomorphic-fetch": "^2.2.1",
     "react": "^0.14.6",
     "react-dom": "^0.14.6",

@@ -32,14 +32,14 @@ export default class VoteComposer extends React.Component {
   }
 
   close() {
-    const { onDeactivate } = this.props;
-    this.setState({vote: emptyVote()});
+    const {onDeactivate} = this.props;
+    this.setState(emptyVote());
     onDeactivate();
   }
 
   save() {
-    const { onSave } = this.props;
-    const { vote } = this.state;
+    const {onSave} = this.props;
+    const {vote} = this.state;
     const newVote = {
       ...vote,
       choices: vote.choices.slice(0, -1)
@@ -81,6 +81,9 @@ export default class VoteComposer extends React.Component {
 
     const newChoices = choices.map((c) => (c.id === choice.id ? newChoice : c));
 
+    // add a new, empty choice field if we're currently in the last choice and the choice
+    // has been new (empty) before. In other words: after entering the first character to the current last
+    // choice add the field for the next choice
     if (!choice.title && newChoice.title && choiceIx === (choices.length - 1)) {
       newChoices.push(emptyChoice());
     }
@@ -101,7 +104,7 @@ export default class VoteComposer extends React.Component {
 
     if (formCompleted) {
       formCompleted = choices.every((c, ix) => ix === choicesCount - 1 || c.title);
-  }
+    }
 
     return formCompleted;
   }
@@ -176,10 +179,3 @@ export default class VoteComposer extends React.Component {
     return this.renderActiveForm();
   }
 }
-
-VoteComposer.propTypes = {
-  active:       React.PropTypes.bool,
-  onSave:       React.PropTypes.func.isRequired,
-  onActivate:   React.PropTypes.func.isRequired,
-  onDeactivate: React.PropTypes.func.isRequired
-};

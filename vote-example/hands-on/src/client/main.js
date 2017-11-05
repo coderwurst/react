@@ -1,34 +1,23 @@
+import 'babel-polyfill';
+
+// React
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-// router
-/* import { Router, Route, Redirect } from 'react-router';
-import createHashHistory from 'history/lib/createHashHistory'; */
+import routes from '../common/routes';
 
-import Layout from './components/Layout';
-import VoteController from './components/VoteController';
+import { Router } from 'react-router';
 
-// import { About } from './components/About';
+import votesCache from '../common/votesCache';
 
-const mainComponent = <VoteController />;
+votesCache.populate(window.__INITIAL_STATE__);
 
-/* const history = createHashHistory({
-  queryKey: false
-});
+import createHistory from 'history/lib/createBrowserHistory';
+const history = createHistory();
 
 const router = <Router history={history}>
-  <Redirect from='/' to='/home' />
-  <Route path='/home' component={Layout} />
-  <Route path='/about' component={About} />
-</Router>; */
+ { routes }
+</Router>;
 
-ReactDOM.render(
-  <Layout>{mainComponent}</Layout>,
-  document.getElementById('voteAppMountPoint')
-);
-
-
-/* ReactDOM.render(
-  router,
-  document.getElementById('voteAppMountPoint')
-); */
+const mount = document.getElementById('voteAppMountPoint');
+ReactDOM.render(router, mount);
